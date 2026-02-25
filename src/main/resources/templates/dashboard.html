@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Centru Recuperare</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .stat-card {
+            transition: transform 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .stat-icon {
+            font-size: 2.5rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="container">
+        <a class="navbar-brand" href="/static">
+            <i class="bi bi-hospital"></i> Centru Recuperare Medicală
+        </a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link active" href="/static">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <a class="nav-link" href="/pacienti">
+                <i class="bi bi-people"></i> Pacienți
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2><i class="bi bi-speedometer2"></i> Dashboard</h2>
+            <p class="text-muted">Prezentare generală sistem management pacienți</p>
+        </div>
+        <a href="/pacienti/nou" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Adaugă Pacient
+        </a>
+    </div>
+
+    <!-- Carduri Statistici -->
+    <div class="row g-4 mb-4">
+        <!-- Total Pacienți -->
+        <div class="col-md-3">
+            <div class="card stat-card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1">Total Pacienți</p>
+                            <h2 class="mb-0" th:text="${totalPacienti}">0</h2>
+                        </div>
+                        <i class="bi bi-people-fill stat-icon text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pacienți Activi -->
+        <div class="col-md-3">
+            <div class="card stat-card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1">Activi</p>
+                            <h2 class="mb-0" th:text="${pacientiActivi}">0</h2>
+                        </div>
+                        <i class="bi bi-person-check-fill stat-icon text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pacienți Internați -->
+        <div class="col-md-3">
+            <div class="card stat-card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1">Internați</p>
+                            <h2 class="mb-0" th:text="${pacientiInternati}">0</h2>
+                        </div>
+                        <i class="bi bi-hospital stat-icon text-info"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pacienți Externați -->
+        <div class="col-md-3">
+            <div class="card stat-card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1">Externați</p>
+                            <h2 class="mb-0" th:text="${pacientiExternati}">0</h2>
+                        </div>
+                        <i class="bi bi-box-arrow-right stat-icon text-secondary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pacienți Recenți -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">
+                <i class="bi bi-clock-history"></i> Ultimii Pacienți Înregistrați
+            </h5>
+        </div>
+        <div class="card-body">
+            <div th:if="${#lists.isEmpty(ultimiiPacienti)}" class="text-center py-4 text-muted">
+                <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+                <p class="mt-3">Nu există pacienți înregistrați încă.</p>
+                <a href="/pacienti/nou" class="btn btn-primary">Adaugă primul pacient</a>
+            </div>
+
+            <div th:unless="${#lists.isEmpty(ultimiiPacienti)}" class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nume Complet</th>
+                        <th>CNP</th>
+                        <th>Telefon</th>
+                        <th>Status</th>
+                        <th>Data Înregistrare</th>
+                        <th>Acțiuni</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="pacient : ${ultimiiPacienti}">
+                        <td th:text="${pacient.id}"></td>
+                        <td>
+                            <strong th:text="${pacient.nume + ' ' + pacient.prenume}"></strong>
+                        </td>
+                        <td th:text="${pacient.cnp}"></td>
+                        <td th:text="${pacient.telefon}"></td>
+                        <td>
+                                    <span class="badge"
+                                          th:classappend="${pacient.status.name() == 'ACTIV'} ? 'bg-success' : (${pacient.status.name() == 'INTERNAT'} ? 'bg-primary' : 'bg-secondary')"
+                                          th:text="${pacient.status}">
+                                    </span>
+                        </td>
+                        <td th:text="${#temporals.format(pacient.dataInregistrare, 'dd/MM/yyyy')}"></td>
+                        <td>
+                            <a th:href="@{/pacienti/editeaza/{id}(id=${pacient.id})}"
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div th:unless="${#lists.isEmpty(ultimiiPacienti)}" class="mt-3 text-end">
+                <a href="/pacienti" class="btn btn-outline-primary">
+                    Vezi toți pacienții <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Cards -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-info-circle"></i> Despre Sistem
+                    </h5>
+                    <p class="card-text text-muted">
+                        Sistem de management pentru centrul de recuperare medicală din Lovrin.
+                        Capacitate: 43 paturi, 21 saloane.
+                    </p>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-check-circle text-success"></i> Gestionare pacienți</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Planificare tratamente</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Rapoarte și statistici</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-lightning-charge"></i> Acțiuni Rapide
+                    </h5>
+                    <div class="d-grid gap-2">
+                        <a href="/pacienti/nou" class="btn btn-outline-primary text-start">
+                            <i class="bi bi-plus-circle"></i> Adaugă Pacient Nou
+                        </a>
+                        <a href="/pacienti" class="btn btn-outline-primary text-start">
+                            <i class="bi bi-list-ul"></i> Vezi Lista Completă
+                        </a>
+                        <a href="/api/pacienti" class="btn btn-outline-secondary text-start" target="_blank">
+                            <i class="bi bi-code-slash"></i> API Pacienți (JSON)
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="bg-white py-3 mt-5 border-top">
+    <div class="container text-center text-muted">
+        <small>&copy; 2026 Centru Recuperare Medicală Lovrin - Proiect Licență UPT</small>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

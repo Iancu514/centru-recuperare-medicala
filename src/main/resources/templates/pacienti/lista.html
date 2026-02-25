@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista Pacienți</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="container">
+        <a class="navbar-brand" href="/"><i class="bi bi-hospital"></i> Centru Recuperare</a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" href="/"><i class="bi bi-speedometer2"></i> Dashboard</a>
+            <a class="nav-link active" href="/pacienti"><i class="bi bi-people"></i> Pacienți</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <!-- Mesaje -->
+    <div th:if="${mesajSucces}" class="alert alert-success alert-dismissible">
+        <i class="bi bi-check-circle"></i> <span th:text="${mesajSucces}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div th:if="${mesajEroare}" class="alert alert-danger alert-dismissible">
+        <i class="bi bi-exclamation-triangle"></i> <span th:text="${mesajEroare}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-people-fill"></i> Lista Pacienți</h2>
+        <a href="/pacienti/nou" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Adaugă Pacient
+        </a>
+    </div>
+
+    <!-- Tabel -->
+    <div class="card">
+        <div class="card-body">
+            <div th:if="${#lists.isEmpty(pacienti)}" class="text-center py-5 text-muted">
+                <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+                <p class="mt-3">Nu există pacienți înregistrați.</p>
+                <a href="/pacienti/nou" class="btn btn-primary">Adaugă primul pacient</a>
+            </div>
+
+            <table th:unless="${#lists.isEmpty(pacienti)}" class="table table-hover">
+                <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Nume</th>
+                    <th>Prenume</th>
+                    <th>CNP</th>
+                    <th>Telefon</th>
+                    <th>Status</th>
+                    <th>Acțiuni</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="pacient : ${pacienti}">
+                    <td th:text="${pacient.id}"></td>
+                    <td th:text="${pacient.nume}"></td>
+                    <td th:text="${pacient.prenume}"></td>
+                    <td th:text="${pacient.cnp}"></td>
+                    <td th:text="${pacient.telefon}"></td>
+                    <td>
+                                <span class="badge"
+                                      th:classappend="${pacient.status.name() == 'ACTIV'} ? 'bg-success' : (${pacient.status.name() == 'INTERNAT'} ? 'bg-primary' : 'bg-secondary')"
+                                      th:text="${pacient.status}">
+                                </span>
+                    </td>
+                    <td>
+                        <a th:href="@{/pacienti/editeaza/{id}(id=${pacient.id})}"
+                           class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a th:href="@{/pacienti/sterge/{id}(id=${pacient.id})}"
+                           class="btn btn-sm btn-outline-danger"
+                           onclick="return confirm('Sigur doriți să ștergeți acest pacient?')">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-3 text-muted">
+        Total pacienți: <strong th:text="${totalPacienti}"></strong>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
