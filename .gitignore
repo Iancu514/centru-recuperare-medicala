@@ -1,0 +1,23 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+target/
+
+# Maven
+.mvn/
+
+# Spring Boot
+*.log
+
+# Database
+*.db
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+build/
