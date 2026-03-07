@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista Terapii</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="container">
+        <a class="navbar-brand" href="/"><i class="bi bi-hospital"></i> Centru Recuperare</a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" href="/"><i class="bi bi-speedometer2"></i> Dashboard</a>
+            <a class="nav-link" href="/pacienti"><i class="bi bi-people"></i> Pacienți</a>
+            <a class="nav-link" href="/saloane"><i class="bi bi-door-open"></i> Saloane</a>
+            <a class="nav-link active" href="/terapii"><i class="bi bi-heart-pulse"></i> Terapii</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <!-- Mesaje -->
+    <div th:if="${mesajSucces}" class="alert alert-success alert-dismissible">
+        <i class="bi bi-check-circle"></i> <span th:text="${mesajSucces}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div th:if="${mesajEroare}" class="alert alert-danger alert-dismissible">
+        <i class="bi bi-exclamation-triangle"></i> <span th:text="${mesajEroare}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2><i class="bi bi-heart-pulse-fill"></i> Tipuri de Terapie</h2>
+            <p class="text-muted">Gestionare tratamente și prețuri</p>
+        </div>
+        <a href="/terapii/nou" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Adaugă Terapie
+        </a>
+    </div>
+
+    <!-- Statistici rapide -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1">Total Tipuri Terapie</p>
+                            <h3 class="mb-0" th:text="${totalTerapii}">0</h3>
+                        </div>
+                        <i class="bi bi-clipboard2-pulse" style="font-size: 2rem; opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1">Terapii Active</p>
+                            <h3 class="mb-0 text-success" th:text="${terapiiActive}">0</h3>
+                        </div>
+                        <i class="bi bi-check-circle" style="font-size: 2rem; opacity: 0.3; color: green;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabel -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div th:if="${#lists.isEmpty(terapii)}" class="text-center py-5 text-muted">
+                <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+                <p class="mt-3">Nu există terapii înregistrate.</p>
+                <a href="/terapii/nou" class="btn btn-primary">Adaugă prima terapie</a>
+            </div>
+
+            <div th:unless="${#lists.isEmpty(terapii)}" class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Denumire</th>
+                        <th>Durată</th>
+                        <th>Preț</th>
+                        <th>Resurse</th>
+                        <th>Capacitate</th>
+                        <th>Status</th>
+                        <th>Acțiuni</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="terapie : ${terapii}">
+                        <td>
+                            <strong th:text="${terapie.denumire}"></strong>
+                            <br>
+                            <small class="text-muted" th:text="${terapie.descriere}"></small>
+                        </td>
+                        <td>
+                            <i class="bi bi-clock"></i>
+                            <span th:text="${terapie.durataMinute}"></span> min
+                        </td>
+                        <td>
+                            <strong th:text="${terapie.pret}"></strong> lei
+                        </td>
+                        <td>
+                                    <span class="badge"
+                                          th:classappend="${terapie.resurseNecesare.name() == 'PISCINA'} ? 'bg-info' : (${terapie.resurseNecesare.name() == 'ECHIPAMENT_SPECIAL'} ? 'bg-warning' : 'bg-secondary')"
+                                          th:text="${terapie.resurseNecesare}">
+                                    </span>
+                        </td>
+                        <td>
+                            <span th:text="${terapie.capacitateMaximaSimultana}"></span>
+                            <span th:text="${terapie.capacitateMaximaSimultana == 1 ? 'pacient' : 'pacienți'}"></span>
+                        </td>
+                        <td>
+                                    <span th:if="${terapie.activ}" class="badge bg-success">
+                                        <i class="bi bi-check-circle"></i> Activ
+                                    </span>
+                            <span th:unless="${terapie.activ}" class="badge bg-danger">
+                                        <i class="bi bi-x-circle"></i> Inactiv
+                                    </span>
+                        </td>
+                        <td>
+                            <a th:href="@{/terapii/editeaza/{id}(id=${terapie.id})}"
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a th:href="@{/terapii/sterge/{id}(id=${terapie.id})}"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('Sigur doriți să ștergeți această terapie?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

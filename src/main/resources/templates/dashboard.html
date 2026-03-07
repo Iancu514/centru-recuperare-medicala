@@ -23,15 +23,21 @@
 <body class="bg-light">
 <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
     <div class="container">
-        <a class="navbar-brand" href="/static">
+        <a class="navbar-brand" href="/">
             <i class="bi bi-hospital"></i> Centru Recuperare Medicală
         </a>
         <div class="navbar-nav ms-auto">
-            <a class="nav-link active" href="/static">
+            <a class="nav-link active" href="/">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
             <a class="nav-link" href="/pacienti">
                 <i class="bi bi-people"></i> Pacienți
+            </a>
+            <a class="nav-link" href="/saloane">
+                <i class="bi bi-door-open"></i> Saloane
+            </a>
+            <a class="nav-link" href="/terapii">
+                <i class="bi bi-heart-pulse"></i> Terapii
             </a>
         </div>
     </div>
@@ -148,10 +154,10 @@
                         <td th:text="${pacient.cnp}"></td>
                         <td th:text="${pacient.telefon}"></td>
                         <td>
-                                    <span class="badge"
-                                          th:classappend="${pacient.status.name() == 'ACTIV'} ? 'bg-success' : (${pacient.status.name() == 'INTERNAT'} ? 'bg-primary' : 'bg-secondary')"
-                                          th:text="${pacient.status}">
-                                    </span>
+                            <span class="badge"
+                                  th:classappend="${pacient.status.name() == 'ACTIV'} ? 'bg-success' : (${pacient.status.name() == 'INTERNAT'} ? 'bg-primary' : 'bg-secondary')"
+                                  th:text="${pacient.status}">
+                            </span>
                         </td>
                         <td th:text="${#temporals.format(pacient.dataInregistrare, 'dd/MM/yyyy')}"></td>
                         <td>
@@ -207,6 +213,12 @@
                         <a href="/pacienti" class="btn btn-outline-primary text-start">
                             <i class="bi bi-list-ul"></i> Vezi Lista Completă
                         </a>
+                        <a href="/saloane" class="btn btn-outline-primary text-start">
+                            <i class="bi bi-door-open"></i> Gestionare Saloane
+                        </a>
+                        <a href="/terapii" class="btn btn-outline-primary text-start">
+                            <i class="bi bi-heart-pulse"></i> Tipuri Terapie
+                        </a>
                         <a href="/api/pacienti" class="btn btn-outline-secondary text-start" target="_blank">
                             <i class="bi bi-code-slash"></i> API Pacienți (JSON)
                         </a>
@@ -219,7 +231,7 @@
 
 <footer class="bg-white py-3 mt-5 border-top">
     <div class="container text-center text-muted">
-        <small>&copy; 2026 Centru Recuperare Medicală Lovrin - Proiect Licență UPT</small>
+        <small>&copy; 2026 Centru Recuperare Medicală Lovrin - Proiect Licență UVT</small>
     </div>
 </footer>
 
