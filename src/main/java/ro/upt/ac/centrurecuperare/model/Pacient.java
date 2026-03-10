@@ -46,6 +46,11 @@ public class Pacient {
     @Column
     private LocalDate dataInregistrare = LocalDate.now();
 
+    // RELATIE: Many-to-One cu Salon (poate fi null daca nu e internat)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "salon_id")
+    private Salon salon;
+
     // Enum pentru status
     public enum StatusPacient {
         ACTIV,
