@@ -25,11 +25,11 @@ public interface InternareRepository extends JpaRepository<Internare, Long> {
     List<Internare> findByPrioritate(Internare.Prioritate prioritate);
 
     //Gaseste internari in asteptare sortate dupa prioritate
-    @Query("SELECT i FROM Internare i WHERE i.status = 'IN_ASTEPTARE' ORDER BY i.prioritate ASC, i.dataInternare ASC")
+    @Query("SELECT i FROM Internare i LEFT JOIN FETCH i.pacient WHERE i.status = 'IN_ASTEPTARE' ORDER BY i.prioritate ASC, i.dataInternare ASC")
     List<Internare> findInternariInAsteptare();
 
     //Gaseste internari active fara salon alocat
-    @Query("SELECT i FROM Internare i WHERE i.status IN ('APROBATA', 'IN_ASTEPTARE') AND i.salon IS NULL")
+    @Query("SELECT i FROM Internare i LEFT JOIN FETCH i.pacient WHERE i.status IN ('APROBATA', 'IN_ASTEPTARE') AND i.salon IS NULL")
     List<Internare> findInternariNealocate();
 
     //Numara internari dupa status
