@@ -4,8 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import ro.upt.ac.centrurecuperare.model.Internare;
 import ro.upt.ac.centrurecuperare.model.Pacient;
-import ro.upt.ac.centrurecuperare.service.PacientService;
+import ro.upt.ac.centrurecuperare.service.*;
 
 import java.util.List;
 import java.util.Map;
@@ -16,31 +17,36 @@ import java.util.stream.Collectors;
 public class DashboardController {
 
     private final PacientService pacientService;
+    private final SalonService salonService;
+    private final TipTerapieService tipTerapieService;
+    private final TerapeutService terapeutService;
+    private final InternareService internareService;
 
     @GetMapping("/")
     public String dashboard(Model model) {
-        List<Pacient> pacienti = pacientService.getAllPacienti();
+        // Statistici Pacienti
+        model.addAttribute("totalPacienti", pacientService.countPacienti());
 
-        // Statistici generale
-        long totalPacienti = pacienti.size();
+        // Statistici Saloane
+        model.addAttribute("totalSaloane", salonService.countSaloane());
+        model.addAttribute("saloaneDisponibile", salonService.countSaloaneDdisponibile());
 
-        // Pacienti per status
-        Map<Pacient.StatusPacient, Long> pacientiPerStatus = pacienti.stream()
-                .collect(Collectors.groupingBy(Pacient::getStatus, Collectors.counting()));
+        // Statistici Terapii
+        model.addAttribute("totalTerapii", tipTerapieService.countTipuriTerapie());
 
-        long pacientiActivi = pacientiPerStatus.getOrDefault(Pacient.StatusPacient.ACTIV, 0L);
-        long pacientiInternati = pacientiPerStatus.getOrDefault(Pacient.StatusPacient.INTERNAT, 0L);
-        long pacientiExternati = pacientiPerStatus.getOrDefault(Pacient.StatusPacient.EXTERNAT, 0L);
+        // Statistici Terapeuti
+        model.addAttribute("totalTerapeuti", terapeutService.countTerapeuti());
+        model.addAttribute("terapeutiActivi", terapeutService.countTerapeutiActivi());
 
-        // Adaug în model
-        model.addAttribute("totalPacienti", totalPacienti);
-        model.addAttribute("pacientiActivi", pacientiActivi);
-        model.addAttribute("pacientiInternati", pacientiInternati);
-        model.addAttribute("pacientiExternati", pacientiExternati);
-        model.addAttribute("ultimiiPacienti", pacienti.stream()
-                .sorted((p1, p2) -> p2.getId().compareTo(p1.getId()))
-                .limit(5)
-                .collect(Collectors.toList()));
+        // Statistici Internari
+        model.addAttribute("totalInternari", internareService.countInternari());
+        model.addAttribute("internariInAsteptare",
+                internareService.countInternariByStatus(Internare.StatusInternare.IN_ASTEPTARE) +
+                        internareService.countInternariByStatus(Internare.StatusInternare.APROBATA));
+        model.addAttribute("internariActive",
+                internareService.countInternariByStatus(Internare.StatusInternare.ACTIVA));
+        model.addAttribute("internariFinalizate",
+                internareService.countInternariByStatus(Internare.StatusInternare.FINALIZATA));
 
         return "dashboard";
     }

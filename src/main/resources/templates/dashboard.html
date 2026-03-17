@@ -42,6 +42,9 @@
             <a class="nav-link" href="/terapeuti">
                 <i class="bi bi-person-badge"></i> Terapeuți
             </a>
+            <a class="nav-link" href="/internari">
+                <i class="bi bi-clipboard-pulse"></i> Internări
+            </a>
             <a class="nav-link" href="/optimizare">
                 <i class="bi bi-cpu"></i> Optimizare
             </a>
@@ -206,6 +209,172 @@
             </div>
         </div>
 
+        <!-- Statistici Pacienti -->
+        <div class="row g-4 mb-4">
+            <div class="col-12">
+                <h4 class="mb-3">
+                    <i class="bi bi-people-fill"></i> Pacienți
+                </h4>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="text-muted mb-1">Total Pacienți</p>
+                                <h3 class="mb-0" th:text="${totalPacienti}">0</h3>
+                            </div>
+                            <i class="bi bi-people" style="font-size: 2rem; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistici Saloane -->
+        <div class="row g-4 mb-4">
+            <div class="col-12">
+                <h4 class="mb-3">
+                    <i class="bi bi-door-open-fill"></i> Saloane
+                </h4>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="text-muted mb-1">Total Saloane</p>
+                                <h3 class="mb-0" th:text="${totalSaloane}">0</h3>
+                            </div>
+                            <i class="bi bi-door-open" style="font-size: 2rem; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="text-muted mb-1">Saloane Disponibile</p>
+                                <h3 class="mb-0 text-success" th:text="${saloaneDisponibile}">0</h3>
+                            </div>
+                            <i class="bi bi-check-circle" style="font-size: 2rem; opacity: 0.3; color: green;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistici Terapii si Terapeuti -->
+        <div class="row g-4 mb-4">
+            <div class="col-12">
+                <h4 class="mb-3">
+                    <i class="bi bi-heart-pulse-fill"></i> Personal și Terapii
+                </h4>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="text-muted mb-1">Tipuri Terapie</p>
+                                <h3 class="mb-0" th:text="${totalTerapii}">0</h3>
+                            </div>
+                            <i class="bi bi-heart-pulse" style="font-size: 2rem; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="text-muted mb-1">Total Terapeuți</p>
+                                <h3 class="mb-0" th:text="${totalTerapeuti}">0</h3>
+                            </div>
+                            <i class="bi bi-person-badge" style="font-size: 2rem; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="text-muted mb-1">Terapeuți Activi</p>
+                                <h3 class="mb-0 text-success" th:text="${terapeutiActivi}">0</h3>
+                            </div>
+                            <i class="bi bi-person-check" style="font-size: 2rem; opacity: 0.3; color: green;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistici Internari -->
+        <div class="row g-4 mb-4">
+            <div class="col-12">
+                <h4 class="mb-3">
+                    <i class="bi bi-clipboard-pulse-fill"></i> Internări
+                </h4>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="text-muted mb-1">Total Internări</p>
+                                <h3 class="mb-0" th:text="${totalInternari}">0</h3>
+                            </div>
+                            <i class="bi bi-clipboard-pulse" style="font-size: 2rem; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="text-muted mb-1">În Așteptare</p>
+                                <h3 class="mb-0 text-warning" th:text="${internariInAsteptare}">0</h3>
+                            </div>
+                            <i class="bi bi-hourglass-split" style="font-size: 2rem; opacity: 0.3; color: orange;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="text-muted mb-1">Active</p>
+                                <h3 class="mb-0 text-success" th:text="${internariActive}">0</h3>
+                            </div>
+                            <i class="bi bi-activity" style="font-size: 2rem; opacity: 0.3; color: green;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="text-muted mb-1">Finalizate</p>
+                                <h3 class="mb-0 text-info" th:text="${internariFinalizate}">0</h3>
+                            </div>
+                            <i class="bi bi-check-circle" style="font-size: 2rem; opacity: 0.3; color: #0dcaf0;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="col-md-6">
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
@@ -228,6 +397,9 @@
                         <a href="/terapeuti" class="btn btn-outline-primary text-start">
                             <i class="bi bi-person-badge"></i> Personal Medical
                         </a>
+                        <a href="/internari" class="btn btn-outline-primary text-start">
+                            <i class="bi bi-clipboard-pulse"></i> Gestionare Internări
+                        </a>
                         <a href="/optimizare" class="btn btn-success text-start">
                             <i class="bi bi-cpu"></i> Optimizare Saloane
                         </a>
@@ -243,7 +415,7 @@
 
 <footer class="bg-white py-3 mt-5 border-top">
     <div class="container text-center text-muted">
-        <small>&copy; 2026 Centru Recuperare Medicală Lovrin - Proiect Licență UVT</small>
+        <small>&copy; 2026 Centru Recuperare Medicală Lovrin - Proiect Licență UPT</small>
     </div>
 </footer>
 

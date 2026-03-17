@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista Internări</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="container">
+        <a class="navbar-brand" href="/"><i class="bi bi-hospital"></i> Centru Recuperare</a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" href="/"><i class="bi bi-speedometer2"></i> Dashboard</a>
+            <a class="nav-link" href="/pacienti"><i class="bi bi-people"></i> Pacienți</a>
+            <a class="nav-link" href="/saloane"><i class="bi bi-door-open"></i> Saloane</a>
+            <a class="nav-link" href="/terapii"><i class="bi bi-heart-pulse"></i> Terapii</a>
+            <a class="nav-link" href="/terapeuti"><i class="bi bi-person-badge"></i> Terapeuți</a>
+            <a class="nav-link active" href="/internari"><i class="bi bi-clipboard-pulse"></i> Internări</a>
+            <a class="nav-link" href="/optimizare"><i class="bi bi-cpu"></i> Optimizare</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <!-- Mesaje -->
+    <div th:if="${mesajSucces}" class="alert alert-success alert-dismissible">
+        <i class="bi bi-check-circle"></i> <span th:text="${mesajSucces}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div th:if="${mesajEroare}" class="alert alert-danger alert-dismissible">
+        <i class="bi bi-exclamation-triangle"></i> <span th:text="${mesajEroare}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2><i class="bi bi-clipboard-pulse-fill"></i> Gestionare Internări</h2>
+            <p class="text-muted">Cereri de internare și alocare paturi</p>
+        </div>
+        <a href="/internari/nou" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Cerere Internare Nouă
+        </a>
+    </div>
+
+    <!-- Statistici rapide -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-list-ul text-primary" style="font-size: 2.5rem;"></i>
+                    <h3 class="mt-2 mb-1" th:text="${totalInternari}">0</h3>
+                    <p class="text-muted mb-0">Total Internări</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-hourglass-split text-warning" style="font-size: 2.5rem;"></i>
+                    <h3 class="mt-2 mb-1 text-warning" th:text="${nealocate}">0</h3>
+                    <p class="text-muted mb-0">În Așteptare</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-activity text-success" style="font-size: 2.5rem;"></i>
+                    <h3 class="mt-2 mb-1 text-success" th:text="${active}">0</h3>
+                    <p class="text-muted mb-0">Active</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-check-circle text-info" style="font-size: 2.5rem;"></i>
+                    <h3 class="mt-2 mb-1 text-info" th:text="${finalizate}">0</h3>
+                    <p class="text-muted mb-0">Finalizate</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtre -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title mb-3">
+                <i class="bi bi-funnel"></i> Filtrare
+            </h5>
+            <div class="btn-group" role="group">
+                <a th:href="@{/internari}"
+                   class="btn"
+                   th:classappend="${statusFiltru == null} ? 'btn-primary' : 'btn-outline-primary'">
+                    <i class="bi bi-list"></i> Toate
+                </a>
+                <a th:href="@{/internari(status='IN_ASTEPTARE')}"
+                   class="btn"
+                   th:classappend="${statusFiltru == 'IN_ASTEPTARE'} ? 'btn-warning' : 'btn-outline-warning'">
+                    <i class="bi bi-hourglass"></i> În Așteptare
+                </a>
+                <a th:href="@{/internari(status='ACTIVA')}"
+                   class="btn"
+                   th:classappend="${statusFiltru == 'ACTIVA'} ? 'btn-success' : 'btn-outline-success'">
+                    <i class="bi bi-activity"></i> Active
+                </a>
+                <a th:href="@{/internari(status='FINALIZATA')}"
+                   class="btn"
+                   th:classappend="${statusFiltru == 'FINALIZATA'} ? 'btn-info' : 'btn-outline-info'">
+                    <i class="bi bi-check-circle"></i> Finalizate
+                </a>
+                <a th:href="@{/internari(status='ANULATA')}"
+                   class="btn"
+                   th:classappend="${statusFiltru == 'ANULATA'} ? 'btn-danger' : 'btn-outline-danger'">
+                    <i class="bi bi-x-circle"></i> Anulate
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabel -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div th:if="${#lists.isEmpty(internari)}" class="text-center py-5 text-muted">
+                <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+                <p class="mt-3">Nu există internări înregistrate.</p>
+                <a href="/internari/nou" class="btn btn-primary">Adaugă prima internare</a>
+            </div>
+
+            <div th:unless="${#lists.isEmpty(internari)}" class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Pacient</th>
+                        <th>Data Internare</th>
+                        <th>Durată</th>
+                        <th>Prioritate</th>
+                        <th>Status</th>
+                        <th>Salon</th>
+                        <th>Acțiuni</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="internare : ${internari}">
+                        <td th:text="${internare.id}"></td>
+                        <td>
+                            <strong th:text="${internare.pacient.nume + ' ' + internare.pacient.prenume}"></strong>
+                            <br>
+                            <small class="text-muted" th:text="${internare.pacient.cnp}"></small>
+                        </td>
+                        <td th:text="${#temporals.format(internare.dataInternare, 'dd/MM/yyyy')}"></td>
+                        <td>
+                            <span th:text="${internare.durataEstimata}"></span> zile
+                        </td>
+                        <td>
+                                    <span class="badge"
+                                          th:classappend="${internare.prioritate.name() == 'URGENTA'} ? 'bg-danger' :
+                                                         (${internare.prioritate.name() == 'RIDICATA'} ? 'bg-warning' :
+                                                         (${internare.prioritate.name() == 'NORMALA'} ? 'bg-info' : 'bg-secondary'))"
+                                          th:text="${internare.prioritate}">
+                                    </span>
+                        </td>
+                        <td>
+                                    <span class="badge"
+                                          th:classappend="${internare.status.name() == 'ACTIVA'} ? 'bg-success' :
+                                                         (${internare.status.name() == 'IN_ASTEPTARE'} ? 'bg-warning' :
+                                                         (${internare.status.name() == 'FINALIZATA'} ? 'bg-info' : 'bg-secondary'))"
+                                          th:text="${internare.status}">
+                                    </span>
+                        </td>
+                        <td>
+                                    <span th:if="${internare.salon != null}">
+                                        <i class="bi bi-door-open"></i>
+                                        <span th:text="${'Salon ' + internare.salon.numar}"></span>
+                                    </span>
+                            <span th:unless="${internare.salon != null}" class="text-muted">
+                                        <i class="bi bi-dash"></i> Nealocate
+                                    </span>
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a th:href="@{/internari/detalii/{id}(id=${internare.id})}"
+                                   class="btn btn-sm btn-outline-info"
+                                   title="Detalii">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a th:href="@{/internari/editeaza/{id}(id=${internare.id})}"
+                                   class="btn btn-sm btn-outline-primary"
+                                   title="Editează">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a th:if="${internare.status.name() == 'ACTIVA'}"
+                                   th:href="@{/internari/finalizeaza/{id}(id=${internare.id})}"
+                                   class="btn btn-sm btn-outline-success"
+                                   title="Finalizează"
+                                   onclick="return confirm('Finalizați această internare?')">
+                                    <i class="bi bi-check-circle"></i>
+                                </a>
+                                <a th:href="@{/internari/sterge/{id}(id=${internare.id})}"
+                                   class="btn btn-sm btn-outline-danger"
+                                   title="Șterge"
+                                   onclick="return confirm('Sigur doriți să ștergeți această internare?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

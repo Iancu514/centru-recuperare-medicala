@@ -12,8 +12,27 @@
     <div class="container">
         <a class="navbar-brand" href="/"><i class="bi bi-hospital"></i> Centru Recuperare</a>
         <div class="navbar-nav ms-auto">
-            <a class="nav-link" href="/"><i class="bi bi-speedometer2"></i> Dashboard</a>
-            <a class="nav-link active" href="/pacienti"><i class="bi bi-people"></i> Pacienți</a>
+            <a class="nav-link" href="/">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <a class="nav-link active" href="/pacienti">
+                <i class="bi bi-people"></i> Pacienți
+            </a>
+            <a class="nav-link" href="/saloane">
+                <i class="bi bi-door-open"></i> Saloane
+            </a>
+            <a class="nav-link" href="/terapii">
+                <i class="bi bi-heart-pulse"></i> Terapii
+            </a>
+            <a class="nav-link" href="/terapeuti">
+                <i class="bi bi-person-badge"></i> Terapeuți
+            </a>
+            <a class="nav-link" href="/internari">
+                <i class="bi bi-clipboard-pulse"></i> Internări
+            </a>
+            <a class="nav-link" href="/optimizare">
+                <i class="bi bi-cpu"></i> Optimizare
+            </a>
         </div>
     </div>
 </nav>
@@ -33,7 +52,7 @@
                         <!-- ID ascuns (pentru editare) -->
                         <input type="hidden" th:field="*{id}">
 
-                        <!-- Nume și Prenume -->
+                        <!-- Nume si Prenume -->
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="nume" class="form-label">
@@ -51,7 +70,7 @@
                             </div>
                         </div>
 
-                        <!-- CNP și Data Nașterii -->
+                        <!-- CNP si Data Nasterii -->
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="cnp" class="form-label">
@@ -74,7 +93,7 @@
                             </div>
                         </div>
 
-                        <!-- Telefon și Adresă -->
+                        <!-- Telefon si Adresa -->
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="telefon" class="form-label">
@@ -97,7 +116,7 @@
                             </div>
                         </div>
 
-                        <!-- Adresă -->
+                        <!-- Adresa -->
                         <div class="mb-3">
                             <label for="adresa" class="form-label">
                                 <i class="bi bi-geo-alt"></i> Adresă
