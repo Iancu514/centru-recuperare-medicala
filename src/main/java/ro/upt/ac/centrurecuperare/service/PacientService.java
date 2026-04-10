@@ -62,4 +62,27 @@ public class PacientService {
     public long countPacienti(){
         return pacientRepository.count();
     }
+
+    // numara pacienti dupa status
+    public long countPacientiByStatus(Pacient.StatusPacient status) {
+        return pacientRepository.findAll().stream()
+                .filter(p -> p.getStatus() == status)
+                .count();
+    }
+
+    // numara pacienti activi
+    public long countPacientiActivi() {
+        return countPacientiByStatus(Pacient.StatusPacient.ACTIV);
+    }
+
+    // numara pacienti internati
+    public long countPacientiInternati() {
+        return countPacientiByStatus(Pacient.StatusPacient.INTERNAT);
+    }
+
+    // numara pacienti externati
+    public long countPacientiExternati() {
+        return countPacientiByStatus(Pacient.StatusPacient.EXTERNAT);
+    }
+
 }

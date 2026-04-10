@@ -179,14 +179,15 @@ public class ServiceOptimizare {
     public Map<String, Object> getStatisticiAlocare(List<RezultatAlocare> rezultate) {
         Map<String, Object> stats = new HashMap<>();
 
-        long alocariReusit = rezultate.stream().filter(RezultatAlocare::isSuccess).count();
-        long alocariEsuate = rezultate.stream().filter(r -> !r.isSuccess()).count();
+        int total = rezultate.size();
+        int success = (int) rezultate.stream().filter(RezultatAlocare::isSuccess).count();
+        int failed = total - success;
+        double rataSucces = total > 0 ? (success * 100.0 / total) : 0.0;
 
-        stats.put("totalInternari", rezultate.size());
-        stats.put("alocariReusit", alocariReusit);
-        stats.put("alocariEsuate", alocariEsuate);
-        stats.put("rataSucces", rezultate.isEmpty() ? 0 :
-                (double) alocariReusit / rezultate.size() * 100);
+        stats.put("totalInternari", total);
+        stats.put("alocariReusit", success);
+        stats.put("alocariEsuate", failed);
+        stats.put("rataSucces", rataSucces);
 
         return stats;
     }

@@ -33,26 +33,18 @@ public class TerapeutService {
     }
 
     public Terapeut saveTerapeut(Terapeut terapeut) {
-        // Converteste CNP gol în NULL pentru a permite multiple NULL-uri
-        if (terapeut.getCnp() != null && terapeut.getCnp().trim().isEmpty()) {
-            terapeut.setCnp(null);
-        }
-
-        //Validare email unic
-        if(terapeut.getId() == null &&
-            terapeutRepository.existsByEmail(terapeut.getEmail())) {
-            throw new IllegalArgumentException("Există deja un terapeut cu email-ul: " +
-                    terapeut.getEmail());
-        }
-
-        //Validare telefon
-        if (terapeut.getTelefon() == null || terapeut.getTelefon().trim().isEmpty())  {
+        // Validari
+        if (terapeut.getTelefon() == null || terapeut.getTelefon().trim().isEmpty()) {
             throw new IllegalArgumentException("Telefonul este obligatoriu");
         }
 
-        //Validare ani experienta
-        if(terapeut.getAniExperienta() == null || terapeut.getAniExperienta() < 0){
+        if (terapeut.getAniExperienta() != null && terapeut.getAniExperienta() < 0) {
             throw new IllegalArgumentException("Anii de experiență trebuie să fie pozitivi");
+        }
+
+        // Verifica email duplicat (doar pentru terapeuti noi)
+        if (terapeut.getId() == null && terapeutRepository.existsByEmail(terapeut.getEmail())) {
+            throw new IllegalArgumentException("Există deja un terapeut cu email-ul " + terapeut.getEmail());
         }
 
         return terapeutRepository.save(terapeut);

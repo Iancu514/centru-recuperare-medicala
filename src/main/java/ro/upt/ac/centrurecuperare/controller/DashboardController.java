@@ -5,12 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import ro.upt.ac.centrurecuperare.model.Internare;
-import ro.upt.ac.centrurecuperare.model.Pacient;
 import ro.upt.ac.centrurecuperare.service.*;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -26,6 +21,10 @@ public class DashboardController {
     public String dashboard(Model model) {
         // Statistici Pacienti
         model.addAttribute("totalPacienti", pacientService.countPacienti());
+        model.addAttribute("pacientiActivi", pacientService.countPacientiActivi());
+        model.addAttribute("pacientiInternati", pacientService.countPacientiInternati());
+        model.addAttribute("pacientiExternati", pacientService.countPacientiExternati());
+
 
         // Statistici Saloane
         model.addAttribute("totalSaloane", salonService.countSaloane());
