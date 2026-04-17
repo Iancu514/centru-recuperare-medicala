@@ -1,5 +1,8 @@
 package ro.upt.ac.centrurecuperare.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,8 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 public class ServiceOptimizare {
+
+    private static final Logger logger = LoggerFactory.getLogger(ServiceOptimizare.class);
 
     private final InternareService internareService;
     private final SalonService salonService;
@@ -88,34 +93,62 @@ public class ServiceOptimizare {
      * Complexitate: O(m * n log n) unde m = nr internari, n = nr saloane
      */
     public List<RezultatAlocare> priorityBasedAllocation() {
-        log.info("Ruleaza algoritm PRIORITY-BASED ALLOCATION");
+        logger.info("=== PRIORITY-BASED ALLOCATION START ===");
+        long startTime = System.currentTimeMillis();
 
         List<RezultatAlocare> rezultate = new ArrayList<>();
 
         //Obtin toate internarile nealocate, sortate dupa prioritate
         List<Internare> internari = internareService.getInternariNealocate();
+        logger.info("Gasit {} internari nealocate pentru procesare", internari.size());
+
+        if (internari.isEmpty()) {
+            logger.warn("Nu exista internari nealocate - algoritm oprit");
+            return new ArrayList<>();
+        }
 
         //Sortare dupa prioritate (Urgenta = 0, Ridicata = 1, Normala = 2, Scazuta = 3)
         internari.sort(Comparator.comparing(i -> i.getPrioritate().ordinal()));
 
-        log.info("Procesare {} internări nealocate", internari.size());
+        logger.debug("Internari sortate dupa prioritate: {}",
+                internari.stream()
+                        .map(i -> i.getPrioritate().toString())
+                        .collect(Collectors.joining(", ")));
+
+        logger.info("Procesare {} internari nealocate", internari.size());
 
         //Proceseaza fiecare internare in ordinea prioritatii
         for (Internare internare : internari) {
+            logger.debug("Procesare internare ID={}, Pacient={}, Prioritate={}",
+                    internare.getId(),
+                    internare.getPacient().getNume(),
+                    internare.getPrioritate());
+
             RezultatAlocare rezultat = bestFit(internare);
             rezultate.add(rezultat);
 
             if(rezultat.isSuccess()) {
-                log.info("Prioritate {}: Alocat pacient {} în salon {}",
+                logger.info("Prioritate {}: Alocat pacient {} in salon {}",
                         internare.getPrioritate(),
                         internare.getPacient().getNume(),
                         rezultat.getSalonAlocat().getNumar());
             } else {
-                log.warn("Prioritate {}: NU s-a putut aloca pacient {}",
+                logger.warn("Prioritate {}: NU s-a putut aloca pacient {} - Motiv: {}",
                         internare.getPrioritate(),
-                        internare.getPacient().getNume());
+                        internare.getPacient().getNume(),
+                        rezultat.getMotiv());
             }
         }
+
+        long duration = System.currentTimeMillis() - startTime;
+        logger.info("=== PRIORITY-BASED ALLOCATION COMPLETE === Durata: {}ms", duration);
+
+        Map<String, Object> stats = getStatisticiAlocare(rezultate);
+        logger.info("Statistici: Total={}, Succes={}, Esuat={}, Rata succes={}%",
+                stats.get("totalInternari"),
+                stats.get("alocariReusit"),
+                stats.get("alocariEsuate"),
+                stats.get("rataSucces"));
 
         return rezultate;
     }

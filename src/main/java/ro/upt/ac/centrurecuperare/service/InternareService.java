@@ -1,5 +1,8 @@
 package ro.upt.ac.centrurecuperare.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +19,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 public class InternareService {
+
+    private static final Logger logger = LoggerFactory.getLogger(InternareService.class);
 
     private final InternareRepository internareRepository;
 
@@ -44,26 +49,43 @@ public class InternareService {
     }
 
     public Internare saveInternare(Internare internare) {
+        logger.debug("Incercare salvare internare pentru pacient: {}",
+                internare.getPacient() != null ? internare.getPacient().getNume() : "NULL");
+
         // Validari
         if (internare.getPacient() == null) {
+            logger.error("Validare esuata: Pacient este null");
             throw new IllegalArgumentException("Pacientul este obligatoriu");
         }
 
         if (internare.getDataInternare() == null) {
+            logger.error("Validare esuata: Data internare este null pentru pacient {}",
+                    internare.getPacient().getNume());
             throw new IllegalArgumentException("Data internării este obligatorie");
         }
 
         if (internare.getDurataEstimata() == null || internare.getDurataEstimata() < 1) {
+            logger.error("Validare esuata: Durata invalida {} pentru pacient {}",
+                    internare.getDurataEstimata(), internare.getPacient().getNume());
             throw new IllegalArgumentException("Durata estimată trebuie să fie mai mare sau egală cu 1 zi");
         }
 
         // Verifica daca pacientul are deja o internare activa
         if (internare.getId() == null && internareRepository.pacientAreInternareActiva(internare.getPacient())) {
+            logger.warn("Validare esuata: Pacient {} are deja internare activa",
+                    internare.getPacient().getNume());
             throw new IllegalArgumentException("Pacientul " + internare.getPacient().getNume() +
                     " are deja o internare activă");
         }
 
-        return internareRepository.save(internare);
+        Internare saved = internareRepository.save(internare);
+        logger.info("Salvare reusita internare ID={} pentru pacient {} (Prioritate: {}, Durata: {} zile)",
+                saved.getId(),
+                saved.getPacient().getNume(),
+                saved.getPrioritate(),
+                saved.getDurataEstimata());
+
+        return saved;
     }
 
     //Aloca un salon pentru o internare

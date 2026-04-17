@@ -34,6 +34,12 @@
             <a class="nav-link" href="/terapeuti"><i class="bi bi-person-badge"></i> Terapeuți</a>
             <a class="nav-link" href="/internari"><i class="bi bi-clipboard-pulse"></i> Internări</a>
             <a class="nav-link active" href="/optimizare"><i class="bi bi-cpu"></i> Optimizare</a>
+            <form method="post" th:action="@{/logout}" style="display: inline; margin-left: 10px;">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
+            </form>
         </div>
     </div>
 </nav>
